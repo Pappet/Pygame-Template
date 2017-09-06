@@ -1,5 +1,4 @@
-import pygame, sys, random, Color, Utilitys
-from Settings import *
+import pygame, sys, random, Color, Utilitys, Settings
 
 
 class Game:
@@ -8,12 +7,19 @@ class Game:
         # Initialise Pygame and the Sound Mixer
         pygame.init()
         pygame.mixer.init()
+        self.load_data()
         # Generate a Screen to Display stuff
-        self.screen = pygame.display.set_mode((ScreenWidth, ScreenHeight))
+        if Settings.Fullscreen:
+            Settings.ScreenWidth, Settings.ScreenHeight = pygame.display.list_modes()[0]
+            self.screen = pygame.display.set_mode((Settings.ScreenWidth, Settings.ScreenHeight), pygame.FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode((Settings.ScreenWidth, Settings.ScreenHeight), pygame.RESIZABLE)
         # Set the Window Name
-        pygame.display.set_caption(ScreenTitle)
+        pygame.display.set_caption(Settings.Title)
+        # Load Icon
+        pygame.display.set_icon(self.icon)
         # Load a Font
-        self.font = pygame.font.match_font(FONT)
+        self.font = pygame.font.match_font(Settings.FONT)
         # Initialise the Clock to limit the Gamespeed
         self.clock = pygame.time.Clock()
         # Is the Game running
@@ -21,13 +27,18 @@ class Game:
         # Is the game paused
         self.paused = False
         # Group for all Sprites
-        # Do i need this here???
+        # Do i need this???
         self.all_sprites = pygame.sprite.Group()
 
     # Generates an new Game
     # Must reset Variables and stuff
     def new(self):
         self.run()
+
+    def load_data(self):
+        self.icon = pygame.image.load(Settings.Icon)
+        self.start_sound = pygame.mixer.Sound(Settings.StartSound)
+        self.pause_sound = pygame.mixer.Sound(Settings.PauseSound)
 
     # The Whole Game
     # Does it need anything else?
@@ -36,7 +47,7 @@ class Game:
         self.start_screen()
         # THE GAMELOOP
         while self.running:
-            self.clock.tick(FPS)
+            self.clock.tick(Settings.FPS)
             self.events()
             self.update()
             self.render()
@@ -53,6 +64,8 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
                 break
+            if event.type == pygame.FULLSCREEN:
+                print("Pressed Fullscreen Button")
             if event.type == pygame.KEYDOWN:
                 # What happens when you click the Escape Key
                 if event.key == pygame.K_ESCAPE:
@@ -74,7 +87,7 @@ class Game:
             # Reset the screen to all black
             self.screen.fill(Color.Black)
             # Just for Testing
-            Utilitys.drawText("GAME", 128, Color.Green, ScreenWidth / 2, ScreenHeight / 2, self.screen)
+            Utilitys.drawText("GAME", 128, Color.Green, Settings.ScreenWidth / 2, Settings.ScreenHeight / 2, self.screen)
         else:
             # if its paused render the Pause Screen
             self.pause_screen()
@@ -89,9 +102,11 @@ class Game:
 
     # Basic Start Screen with Text Info's
     def start_screen(self):
+        # Play a Sound
+        self.start_sound.play()
         self.screen.fill(Color.Black)
         # Write Some Text
-        Utilitys.drawText("START", 128, Color.White, ScreenWidth / 2, ScreenHeight / 2, self.screen)
+        Utilitys.drawText("START", 128, Color.White, Settings.ScreenWidth / 2, Settings.ScreenHeight / 2, self.screen)
         pygame.display.flip()
         # Waiting until Player presses a Key to Continue
         Utilitys.wait_for_key(self, self.paused)
@@ -100,16 +115,17 @@ class Game:
     def end_screen(self):
         self.screen.fill(Color.Black)
         # Write Some Text
-        Utilitys.drawText("Thank you for playing!", 64, Color.Red, ScreenWidth / 2, ScreenHeight / 4, self.screen)
-        Utilitys.drawText("press any Key to close", 32, Color.Red, ScreenWidth / 2, ScreenHeight / 2, self.screen)
+        Utilitys.drawText("Thank you for playing!", 64, Color.Red, Settings.ScreenWidth / 2, Settings.ScreenHeight / 4, self.screen)
+        Utilitys.drawText("press any Key to close", 32, Color.Red, Settings.ScreenWidth / 2, Settings.ScreenHeight / 2, self.screen)
         pygame.display.flip()
         # Waiting until Player presses a Key to Continue
         Utilitys.wait_for_key(self, self.paused)
 
     # Basic Pause Screen with Text Info's
     def pause_screen(self):
+        self.pause_sound.play()
         # Draw an transparent Background over everything else
-        transparentBackground = pygame.Surface((ScreenWidth, ScreenHeight))
+        transparentBackground = pygame.Surface((Settings.ScreenWidth, Settings.ScreenHeight))
         transparentBackground.set_alpha(128)
         transparentBackground.fill(Color.Black)
         self.screen.blit(transparentBackground, (0, 0))
@@ -117,18 +133,18 @@ class Game:
         Utilitys.drawText("Pause",
                           64,
                           Color.RandomColor(),
-                          ScreenWidth / 2,
+                          Settings.ScreenWidth / 2,
                           10,
                           self.screen)
         Utilitys.drawText("Press any Key to Continue...", 32,
                           Color.RandomColor(),
-                          ScreenWidth / 2,
+                          Settings.ScreenWidth / 2,
                           76,
                           self.screen)
         Utilitys.drawText("Press Escape to Quit", 32,
                           Color.RandomColor(),
-                          ScreenWidth / 2,
-                          ScreenHeight - 32,
+                          Settings.ScreenWidth / 2,
+                          Settings.ScreenHeight - 32,
                           self.screen)
         pygame.display.flip()
         # Waiting until Player presses a Key to Continue
