@@ -35,22 +35,28 @@ class Game:
     def new(self):
         self.run()
 
+    # Load different Data like Sprites and Sounds
     def load_data(self):
         self.icon = pygame.image.load(Settings.Icon)
         self.start_sound = pygame.mixer.Sound(Settings.StartSound)
-        self.pause_sound = pygame.mixer.Sound(Settings.PauseSound)
+        self.end_sound = pygame.mixer.Sound(Settings.EndSound)
+        pygame.mixer.music.load(Settings.StartMusic)
 
     # The Whole Game
     # Does it need anything else?
     def run(self):
         # Show the Start Screen
         self.start_screen()
+        # Play the Music
+        pygame.mixer.music.play(-1, 0.0)
         # THE GAMELOOP
         while self.running:
             self.clock.tick(Settings.FPS)
             self.events()
             self.update()
             self.render()
+        #Stops the Music
+        pygame.mixer.music.fadeout(1000)
         # Show something when the Game is closing
         self.end_screen()
         # Close the Game
@@ -64,8 +70,6 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
                 break
-            if event.type == pygame.FULLSCREEN:
-                print("Pressed Fullscreen Button")
             if event.type == pygame.KEYDOWN:
                 # What happens when you click the Escape Key
                 if event.key == pygame.K_ESCAPE:
@@ -104,6 +108,7 @@ class Game:
     def start_screen(self):
         # Play a Sound
         self.start_sound.play()
+        # Resets the Screen
         self.screen.fill(Color.Black)
         # Write Some Text
         Utilitys.drawText("START", 128, Color.White, Settings.ScreenWidth / 2, Settings.ScreenHeight / 2, self.screen)
@@ -111,8 +116,11 @@ class Game:
         # Waiting until Player presses a Key to Continue
         Utilitys.wait_for_key(self, self.paused)
 
+
     # Basic End Screen with Text Info's
     def end_screen(self):
+        # Play a Sound
+        self.end_sound.play()
         self.screen.fill(Color.Black)
         # Write Some Text
         Utilitys.drawText("Thank you for playing!", 64, Color.Red, Settings.ScreenWidth / 2, Settings.ScreenHeight / 4, self.screen)
@@ -123,7 +131,8 @@ class Game:
 
     # Basic Pause Screen with Text Info's
     def pause_screen(self):
-        self.pause_sound.play()
+        #Set The Music Volume
+        pygame.mixer.music.set_volume(Settings.volume_music_paused_screen)
         # Draw an transparent Background over everything else
         transparentBackground = pygame.Surface((Settings.ScreenWidth, Settings.ScreenHeight))
         transparentBackground.set_alpha(128)
@@ -151,3 +160,5 @@ class Game:
         Utilitys.wait_for_key(self, self.paused)
         # End the pause
         self.paused = False
+        #Reset the Music Volume
+        pygame.mixer.music.set_volume(Settings.volume_music)
