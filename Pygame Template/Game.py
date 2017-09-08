@@ -1,4 +1,4 @@
-import pygame, sys, random, Color, Utilitys, Settings
+import pygame, sys, random, Color, Utilitys, Settings, Scenes
 
 
 class Game:
@@ -22,143 +22,52 @@ class Game:
         self.font = pygame.font.match_font(Settings.FONT)
         # Initialise the Clock to limit the Gamespeed
         self.clock = pygame.time.Clock()
+        # Create Scene Manager
+        self.scene_manager = Scenes.sceneManager()
         # Is the Game running
         self.running = True
-        # Is the game paused
-        self.paused = False
         # Group for all Sprites
         # Do i need this???
         self.all_sprites = pygame.sprite.Group()
+
+    # Load different Data like Sprites and Sounds
+    def load_data(self):
+        self.icon = pygame.image.load(Settings.Icon)
+        pygame.mixer.music.load(Settings.StartMusic)
 
     # Generates an new Game
     # Must reset Variables and stuff
     def new(self):
         self.run()
 
-    # Load different Data like Sprites and Sounds
-    def load_data(self):
-        self.icon = pygame.image.load(Settings.Icon)
-        self.start_sound = pygame.mixer.Sound(Settings.StartSound)
-        self.end_sound = pygame.mixer.Sound(Settings.EndSound)
-        pygame.mixer.music.load(Settings.StartMusic)
-
     # The Whole Game
     # Does it need anything else?
     def run(self):
-        # Show the Start Screen
-        self.start_screen()
-        # Play the Music
-        pygame.mixer.music.play(-1, 0.0)
         # THE GAMELOOP
         while self.running:
             self.clock.tick(Settings.FPS)
             self.events()
-            self.update()
-            self.render()
-        #Stops the Music
-        pygame.mixer.music.fadeout(1000)
-        # Show something when the Game is closing
-        self.end_screen()
+            self.scene_manager.scene.handle_events(pygame.event.get(),self.scene_manager)
+            self.scene_manager.scene.update()
+            self.scene_manager.scene.render(self.screen)
+            pygame.display.flip()
         # Close the Game
         self.close()
 
     # The Events, like Key pressed and stuff
     def events(self):
-        # Get all Events
-        for event in pygame.event.get():
-            # What happens when you click the little X in the upper right corner
-            if event.type == pygame.QUIT:
-                self.running = False
-                break
-            if event.type == pygame.KEYDOWN:
-                # What happens when you click the Escape Key
-                if event.key == pygame.K_ESCAPE:
-                    # Pause the Game
-                    self.paused = True
-
-    # Here comes the Gamemechanics
-    def update(self):
-        if not self.paused:
-            pass
-        else:
-            pass
-
-    # Rendering the Stuff on the Screen
-    def render(self):
-        # Check if the Game is paused
-        if not self.paused:
-            # if not render the normal Game stuff
-            # Reset the screen to all black
-            self.screen.fill(Color.Black)
-            # Just for Testing
-            Utilitys.drawText("GAME", 128, Color.Green, Settings.ScreenWidth / 2, Settings.ScreenHeight / 2, self.screen)
-        else:
-            # if its paused render the Pause Screen
-            self.pause_screen()
-        # needed for double Buffering
-        pygame.display.flip()
+        # What happens when you click the little X in the upper right corner
+        if pygame.event.get(pygame.QUIT):
+            self.running = False
 
     # Close The Game
     def close(self):
+        # Stops the Music
+        pygame.mixer.music.fadeout(500)
         # Shutdown Pygame and Sys
         pygame.quit()
         sys.exit()
 
-    # Basic Start Screen with Text Info's
-    def start_screen(self):
-        # Play a Sound
-        self.start_sound.play()
-        # Resets the Screen
-        self.screen.fill(Color.Black)
-        # Write Some Text
-        Utilitys.drawText("START", 128, Color.White, Settings.ScreenWidth / 2, Settings.ScreenHeight / 2, self.screen)
-        pygame.display.flip()
-        # Waiting until Player presses a Key to Continue
-        Utilitys.wait_for_key(self, self.paused)
-
-
-    # Basic End Screen with Text Info's
-    def end_screen(self):
-        # Play a Sound
-        self.end_sound.play()
-        self.screen.fill(Color.Black)
-        # Write Some Text
-        Utilitys.drawText("Thank you for playing!", 64, Color.Red, Settings.ScreenWidth / 2, Settings.ScreenHeight / 4, self.screen)
-        Utilitys.drawText("press any Key to close", 32, Color.Red, Settings.ScreenWidth / 2, Settings.ScreenHeight / 2, self.screen)
-        pygame.display.flip()
-        # Waiting until Player presses a Key to Continue
-        Utilitys.wait_for_key(self, self.paused)
-
-    # Basic Pause Screen with Text Info's
-    def pause_screen(self):
-        #Set The Music Volume
-        pygame.mixer.music.set_volume(Settings.volume_music_paused_screen)
-        # Draw an transparent Background over everything else
-        transparentBackground = pygame.Surface((Settings.ScreenWidth, Settings.ScreenHeight))
-        transparentBackground.set_alpha(128)
-        transparentBackground.fill(Color.Black)
-        self.screen.blit(transparentBackground, (0, 0))
-        # Write Some Text
-        Utilitys.drawText("Pause",
-                          64,
-                          Color.RandomColor(),
-                          Settings.ScreenWidth / 2,
-                          10,
-                          self.screen)
-        Utilitys.drawText("Press any Key to Continue...", 32,
-                          Color.RandomColor(),
-                          Settings.ScreenWidth / 2,
-                          76,
-                          self.screen)
-        Utilitys.drawText("Press Escape to Quit", 32,
-                          Color.RandomColor(),
-                          Settings.ScreenWidth / 2,
-                          Settings.ScreenHeight - 32,
-                          self.screen)
-        pygame.display.flip()
-        # Waiting until Player presses a Key to Continue
-        Utilitys.wait_for_key(self, self.paused)
-        # End the pause
-        self.paused = False
-        #Reset the Music Volume
-        pygame.mixer.music.set_volume(Settings.volume_music)
+if __name__ == "__main__":
+    game = Game()
+    game.new()

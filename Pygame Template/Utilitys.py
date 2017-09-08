@@ -24,6 +24,4 @@ def wait_for_key(self, paused):
                 waiting = False
                 self.running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE and paused:
-                    self.running = False
                 waiting = False
