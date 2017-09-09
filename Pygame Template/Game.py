@@ -29,7 +29,7 @@ class Game:
         self.scene_manager = Scenes.SceneManager()
         # Is the Game running
         self.running = True
-        
+
     # Load different Data like Sprites and Sounds
     def load_data(self):
         self.icon = pygame.image.load(Settings.Icon)

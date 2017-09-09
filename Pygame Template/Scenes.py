@@ -2,7 +2,7 @@ import pygame
 import Color
 import Utilitys
 import Settings
-
+from Player import *
 
 class Scene(object):
     def __init__(self):
@@ -58,6 +58,8 @@ class GameScene(Scene):
         # Group for all Sprites
         # Do i need this???
         self.all_sprites = pygame.sprite.Group()
+        self.player = Player()
+        self.all_sprites.add(self.player)
 
     def render(self, screen):
         if not self.paused:
@@ -65,6 +67,7 @@ class GameScene(Scene):
             screen.fill(Color.Black)
             # Just for Testing
             Utilitys.draw_text("GAME", 128, Color.Green, Settings.ScreenWidth / 2, Settings.ScreenHeight / 8, screen)
+            self.all_sprites.draw(screen)
         else:
             # Draw an transparent Background over everything else
             transparent_background = pygame.Surface((Settings.ScreenWidth, Settings.ScreenHeight))
@@ -80,7 +83,10 @@ class GameScene(Scene):
         pygame.display.flip()
 
     def update(self):
-        pass
+        if not self.paused:
+            self.all_sprites.update()
+        else:
+            pass
 
     def handle_events(self, events, scene_manager):
         for e in events:
