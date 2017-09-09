@@ -1,11 +1,11 @@
-#The Settings for the Game
+# The Settings for the Game
 
-#How big should the Window be???
+# How big should the Window be???
 ScreenWidth = 1024
 ScreenHeight = 768
-#Fullscreen?
+# Fullscreen?
 Fullscreen = False
-#How fast should the Game run?
+# How fast should the Game run?
 FPS = 60
 
 # Whats the name of the Window
@@ -15,14 +15,14 @@ FONT = "Fonts\Minecrafter.ttf"
 # Icon Image Path
 Icon = "Icons\Icon.png"
 
-#Music Volume
+# Music Volume
 volume_music = 1
-#Music Volume for Pause Screen
+# Music Volume for Pause Screen
 volume_music_paused_screen = 0.25
 
-#Start Sound
+# Start Sound
 StartSound = "Sounds\StartSound.ogg"
-#Start Music
+# Start Music
 StartMusic = "Sounds\StartMusic.mp3"
-#Pause Sound
+# Pause Sound
 EndSound = "Sounds\EndSound.wav"

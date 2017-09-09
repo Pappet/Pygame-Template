@@ -1,4 +1,7 @@
-import pygame, sys, random, Color, Utilitys, Settings, Scenes
+import pygame
+import sys
+import Settings
+import Scenes
 
 
 class Game:
@@ -23,13 +26,10 @@ class Game:
         # Initialise the Clock to limit the Gamespeed
         self.clock = pygame.time.Clock()
         # Create Scene Manager
-        self.scene_manager = Scenes.sceneManager()
+        self.scene_manager = Scenes.SceneManager()
         # Is the Game running
         self.running = True
-        # Group for all Sprites
-        # Do i need this???
-        self.all_sprites = pygame.sprite.Group()
-
+        
     # Load different Data like Sprites and Sounds
     def load_data(self):
         self.icon = pygame.image.load(Settings.Icon)
@@ -47,10 +47,9 @@ class Game:
         while self.running:
             self.clock.tick(Settings.FPS)
             self.events()
-            self.scene_manager.scene.handle_events(pygame.event.get(),self.scene_manager)
+            self.scene_manager.scene.handle_events(pygame.event.get(), self.scene_manager)
             self.scene_manager.scene.update()
             self.scene_manager.scene.render(self.screen)
-            pygame.display.flip()
         # Close the Game
         self.close()
 
@@ -62,8 +61,6 @@ class Game:
 
     # Close The Game
     def close(self):
-        # Stops the Music
-        pygame.mixer.music.fadeout(500)
         # Shutdown Pygame and Sys
         pygame.quit()
         sys.exit()
