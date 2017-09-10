@@ -11,7 +11,7 @@ FPS = 60
 # Whats the name of the Window
 Title = "My Game"
 # Which Font do you want to use for the Game
-FONT = "Fonts\Minecrafter.ttf"
+FONT = "Fonts\Minecrafter.Reg.ttf"
 # Icon Image Path
 Icon = "Icons\Icon.png"
 

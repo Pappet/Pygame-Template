@@ -2,6 +2,7 @@ import pygame
 import Color
 import Utilitys
 import Settings
+import GUI
 from Player import *
 
 class Scene(object):
@@ -31,22 +32,35 @@ class TitleScene(Scene):
     def __init__(self):
         super(TitleScene, self).__init__()
 
+        self.playButton = GUI.Button("Play", 75, Settings.ScreenWidth / 2, Settings.ScreenHeight / 6)
+        self.optionsButton = GUI.Button("Options", 75, Settings.ScreenWidth / 2, Settings.ScreenHeight / 3)
+        self.exitButton = GUI.Button("Exit", 75, Settings.ScreenWidth / 2, Settings.ScreenHeight / 2)
+
+        self.allButtons = (self.playButton, self.optionsButton, self.exitButton)
+
     def render(self, screen):
         # Resets the Screen
-        screen.fill(Color.Black)
-        # Write Some Text
-        Utilitys.draw_text("START", 128, Color.White, Settings.ScreenWidth / 2, Settings.ScreenHeight / 8, screen)
-        Utilitys.draw_text("Press Space to Continue...", 32, Color.White, Settings.ScreenWidth / 2,
-                           Settings.ScreenHeight / 2, screen)
+        screen.fill(Color.Blue)
+
+        for a in self.allButtons:
+            a.draw(screen)
+
         pygame.display.flip()
 
     def update(self):
-        pass
+        for a in self.allButtons:
+            a.update()
 
     def handle_events(self, events, scene_manager):
-        for e in events:
-            if e.type == pygame.KEYDOWN and e.key == pygame.K_SPACE:
-                scene_manager.go_to(GameScene())
+        for a in self.allButtons:
+            a.handle_events()
+
+        if "clicked" in self.playButton.handle_events():
+            scene_manager.go_to(GameScene())
+        if "clicked" in self.exitButton.handle_events():
+            scene_manager.go_to(EndScene())
+
+
 
 
 class GameScene(Scene):
@@ -55,8 +69,8 @@ class GameScene(Scene):
         # Play a Sound
         pygame.mixer.music.play()
         self.paused = False
+
         # Group for all Sprites
-        # Do i need this???
         self.all_sprites = pygame.sprite.Group()
         self.player = Player()
         self.all_sprites.add(self.player)
