@@ -4,14 +4,14 @@
 ScreenWidth = 1024
 ScreenHeight = 768
 # Fullscreen?
-Fullscreen = False
+Fullscreen = True
 # How fast should the Game run?
 FPS = 60
 
 # Whats the name of the Window
 Title = "My Game"
 # Which Font do you want to use for the Game
-FONT = "Fonts\Minecrafter.Reg.ttf"
+FONT = "Fonts\kenvector_future.ttf"
 # Icon Image Path
 Icon = "Icons\Icon.png"
 

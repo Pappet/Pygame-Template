@@ -2,6 +2,7 @@ import pygame
 import Settings
 import Color
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -14,4 +15,3 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += 5
         if self.rect.left > Settings.ScreenWidth:
             self.rect.left = 0
-

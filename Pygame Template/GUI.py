@@ -10,34 +10,58 @@ class Button(object):
         self.mouseOverButton = False  # is the mouse currently hovering over the button?
         self._visible = True  # is the button visible
 
-        self.text = text
-        self.size = size
-        self.font = pygame.font.Font(Settings.FONT, self.size)
-
         self.buttonColor = Color.LightGray
         self.highlightColor = Color.Gray
         self.pressedColor = Color.DarkGray
         self.textColor = Color.Black
 
+        self.text = text
+        self.size = size
+        self.font = pygame.font.Font(Settings.FONT, self.size)
+        self.text_surface = self.font.render(self.text, True, self.textColor)
+
         self.pos = (x, y)
-        self.width = self.font.size(text)[0]
-        self.height = self.font.size(text)[1]
+        self.width = self.text_surface.get_width() + 20
+        self.height = self.text_surface.get_height()
+
+        self.text_rect = self.text_surface.get_rect()
+        self.text_rect.center = (self.width / 2, self.height / 2)
 
         self.imageNormal = pygame.Surface((self.width, self.height))
         self.imageNormal.fill(self.buttonColor)
 
+        pygame.draw.rect(self.imageNormal, Color.Black, pygame.Rect((0, 0, self.width, self.height)), 1)
+        pygame.draw.line(self.imageNormal, Color.White, (1, 1), (self.width - 2, 1))
+        pygame.draw.line(self.imageNormal, Color.White, (1, 1), (1, self.height - 2))
+        pygame.draw.line(self.imageNormal, Color.DarkGray, (1, self.height - 2), (1, 1))
+        pygame.draw.line(self.imageNormal, Color.DarkGray, (1, 1), (self.width - 2, 1))
+        pygame.draw.line(self.imageNormal, Color.Gray, (2, self.height - 3), (2, 2))
+        pygame.draw.line(self.imageNormal, Color.Gray, (2, 2), (self.width - 3, 2))
+
         self.imagePressed = pygame.Surface((self.width, self.height))
         self.imagePressed.fill(self.pressedColor)
+
+        pygame.draw.rect(self.imagePressed, Color.Black, pygame.Rect((0, 0, self.width, self.height)), 1)
+        pygame.draw.line(self.imagePressed, Color.White, (1, 1), (self.width - 2, 1))
+        pygame.draw.line(self.imagePressed, Color.White, (1, 1), (1, self.height - 2))
+        pygame.draw.line(self.imagePressed, Color.DarkGray, (1, self.height - 2), (1, 1))
+        pygame.draw.line(self.imagePressed, Color.DarkGray, (1, 1), (self.width - 2, 1))
+        pygame.draw.line(self.imagePressed, Color.Gray, (2, self.height - 3), (2, 2))
+        pygame.draw.line(self.imagePressed, Color.Gray, (2, 2), (self.width - 3, 2))
 
         self.imageHighlight = pygame.Surface((self.width, self.height))
         self.imageHighlight.fill(self.highlightColor)
 
+        pygame.draw.rect(self.imageHighlight, Color.Black, pygame.Rect((0, 0, self.width, self.height)), 1)
+        pygame.draw.line(self.imageHighlight, Color.White, (1, 1), (self.width - 2, 1))
+        pygame.draw.line(self.imageHighlight, Color.White, (1, 1), (1, self.height - 2))
+        pygame.draw.line(self.imageHighlight, Color.DarkGray, (1, self.height - 2), (1, 1))
+        pygame.draw.line(self.imageHighlight, Color.DarkGray, (1, 1), (self.width - 2, 1))
+        pygame.draw.line(self.imageHighlight, Color.Gray, (2, self.height - 3), (2, 2))
+        pygame.draw.line(self.imageHighlight, Color.Gray, (2, 2), (self.width - 3, 2))
+
         self.rect = self.imageNormal.get_rect()
         self.rect.center = self.pos
-
-        self.text_surface = self.font.render(self.text, True, self.textColor)
-        self.text_rect = self.text_surface.get_rect()
-        self.text_rect.midtop = (self.width / 2, 0 + self.height * 0.1)
 
     def handle_events(self):
         ret_val = []
@@ -69,3 +93,24 @@ class Button(object):
 
     def update(self):
         pass
+
+def ButtonGrid(titles, size, pos):
+    font = pygame.font.Font(Settings.FONT, size)
+    buttons = []
+    offset =  0 + font.size(titles[0])[0] / 2
+    y = 0
+
+
+    for index, item in enumerate(titles):
+        if pos == "Top":
+            y = 0 + font.size(item)[1] / 2
+            offset += Settings.ScreenWidth / len(titles) * index + font.size(item)[0] / 2
+        if pos == "Bottom":
+            y = Settings.ScreenHeight - size
+            offset = Settings.ScreenHeight / len(titles)
+
+        buttons.append(Button(item, size, offset, y))
+
+    return buttons
+
+

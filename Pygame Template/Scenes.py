@@ -1,9 +1,10 @@
-import pygame
-import Color
-import Utilitys
-import Settings
-import GUI
 from Player import *
+import pygame
+import Utilitys
+import GUI
+import Color
+import Settings
+
 
 class Scene(object):
     def __init__(self):
@@ -61,15 +62,14 @@ class TitleScene(Scene):
             scene_manager.go_to(EndScene())
 
 
-
-
 class GameScene(Scene):
     def __init__(self):
         super(GameScene, self).__init__()
         # Play a Sound
         pygame.mixer.music.play()
         self.paused = False
-
+        self.titles = ("Map", "Inventory", "Quests", "Menu")
+        self.buttons = GUI.ButtonGrid(self.titles, 75, "Top")
         # Group for all Sprites
         self.all_sprites = pygame.sprite.Group()
         self.player = Player()
@@ -80,8 +80,10 @@ class GameScene(Scene):
             # Reset the screen to all black
             screen.fill(Color.Black)
             # Just for Testing
-            Utilitys.draw_text("GAME", 128, Color.Green, Settings.ScreenWidth / 2, Settings.ScreenHeight / 8, screen)
+            #Utilitys.draw_text("GAME", 128, Color.Green, Settings.ScreenWidth / 2, Settings.ScreenHeight / 8, screen)
             self.all_sprites.draw(screen)
+            for b in self.buttons:
+                b.draw(screen)
         else:
             # Draw an transparent Background over everything else
             transparent_background = pygame.Surface((Settings.ScreenWidth, Settings.ScreenHeight))
@@ -99,10 +101,15 @@ class GameScene(Scene):
     def update(self):
         if not self.paused:
             self.all_sprites.update()
+            for b in self.buttons:
+                b.update()
         else:
             pass
 
     def handle_events(self, events, scene_manager):
+        for b in self.buttons:
+            b.handle_events()
+
         for e in events:
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
