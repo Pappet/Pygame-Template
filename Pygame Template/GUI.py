@@ -4,11 +4,14 @@ import Settings
 
 
 class Button(object):
-    def __init__(self, text, size, x, y):
+    def __init__(self, text, size, x, y, width = None):
         # tracks the state of the button
         self.buttonDown = False  # is the button currently pushed down?
+        self.buttonPressed = False
         self.mouseOverButton = False  # is the mouse currently hovering over the button?
         self._visible = True  # is the button visible
+
+        self.clickSound = pygame.mixer.Sound(Settings.ClickSound)
 
         self.buttonColor = Color.LightGray
         self.highlightColor = Color.Gray
@@ -21,7 +24,11 @@ class Button(object):
         self.text_surface = self.font.render(self.text, True, self.textColor)
 
         self.pos = (x, y)
-        self.width = self.text_surface.get_width() + 20
+        if width:
+            self.width = width
+        else:
+            self.width = self.text_surface.get_width() + 20
+
         self.height = self.text_surface.get_height()
 
         self.text_rect = self.text_surface.get_rect()
@@ -65,13 +72,16 @@ class Button(object):
 
     def handle_events(self):
         ret_val = []
+        click = pygame.mouse.get_pressed()
 
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             self.mouseOverButton = True
-            if pygame.mouse.get_pressed()[0]:
+            ret_val.append("over")
+            if click[0] == 1 and not self.buttonDown:
                 self.buttonDown = True
+                self.clickSound.play()
                 ret_val.append("clicked")
-            else:
+            elif click[0] == 0:
                 self.buttonDown = False
         else:
             self.buttonDown = False
@@ -94,22 +104,33 @@ class Button(object):
     def update(self):
         pass
 
-def ButtonGrid(titles, size, pos):
+def ButtonGrid(titles, size, pos = None):
+
     font = pygame.font.Font(Settings.FONT, size)
     buttons = []
-    offset =  0 + font.size(titles[0])[0] / 2
-    y = 0
-
+    notfitting = False
 
     for index, item in enumerate(titles):
-        if pos == "Top":
-            y = 0 + font.size(item)[1] / 2
-            offset += Settings.ScreenWidth / len(titles) * index + font.size(item)[0] / 2
-        if pos == "Bottom":
-            y = Settings.ScreenHeight - size
-            offset = Settings.ScreenHeight / len(titles)
+        if font.size(item)[0] > Settings.ScreenWidth / len(titles):
+            notfitting = True
+            print(index)
+        else:
+            notfitting = False
+        while notfitting:
+            size -= 2
+            font = pygame.font.Font(Settings.FONT, size)
+            if font.size(item)[0] < Settings.ScreenWidth / len(titles):
+                notfitting = False
 
-        buttons.append(Button(item, size, offset, y))
+    if (pos == "Bottom"):
+        y = Settings.ScreenHeight - font.size(titles[0])[1]
+    else:
+        y = 0
+
+    for index, item in enumerate(titles):
+        offset =  index * ((Settings.ScreenWidth / len(titles)) )
+        buttons.append(Button(item, size, offset, y, Settings.ScreenWidth / len(titles)))
+        buttons[index].rect.topleft = (offset,y)
 
     return buttons
 

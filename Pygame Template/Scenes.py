@@ -53,13 +53,16 @@ class TitleScene(Scene):
             a.update()
 
     def handle_events(self, events, scene_manager):
-        for a in self.allButtons:
-            a.handle_events()
-
         if "clicked" in self.playButton.handle_events():
+            print("clicked")
             scene_manager.go_to(GameScene())
+        if "" in self.optionsButton.handle_events():
+            pass
         if "clicked" in self.exitButton.handle_events():
             scene_manager.go_to(EndScene())
+
+        for a in self.allButtons:
+            a.handle_events()
 
 
 class GameScene(Scene):
@@ -68,8 +71,10 @@ class GameScene(Scene):
         # Play a Sound
         pygame.mixer.music.play()
         self.paused = False
-        self.titles = ("Map", "Inventory", "Quests", "Menu")
-        self.buttons = GUI.ButtonGrid(self.titles, 75, "Top")
+
+        self.titles = ("Map", "Inventory", "Quests", "Menu", "pups", "Astrid")
+        self.buttons = GUI.ButtonGrid(self.titles, 75, "Bottom")
+
         # Group for all Sprites
         self.all_sprites = pygame.sprite.Group()
         self.player = Player()

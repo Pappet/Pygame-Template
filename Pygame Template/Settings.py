@@ -6,7 +6,7 @@ ScreenHeight = 768
 # Fullscreen?
 Fullscreen = True
 # How fast should the Game run?
-FPS = 60
+FPS = 30
 
 # Whats the name of the Window
 Title = "My Game"
@@ -26,3 +26,5 @@ StartSound = "Sounds\StartSound.ogg"
 StartMusic = "Sounds\StartMusic.mp3"
 # Pause Sound
 EndSound = "Sounds\EndSound.wav"
+# Click Sound
+ClickSound = "Sounds\GUI\click1.wav"
