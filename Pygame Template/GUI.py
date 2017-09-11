@@ -4,7 +4,7 @@ import Settings
 
 
 class Button(object):
-    def __init__(self, text, size, x, y, width = None):
+    def __init__(self, text, size, x, y, width=None):
         # tracks the state of the button
         self.buttonDown = False  # is the button currently pushed down?
         self.buttonPressed = False
@@ -104,34 +104,30 @@ class Button(object):
     def update(self):
         pass
 
-def ButtonGrid(titles, size, pos = None):
 
+def button_grid(titles, size, pos=None):
     font = pygame.font.Font(Settings.FONT, size)
     buttons = []
-    notfitting = False
 
     for index, item in enumerate(titles):
         if font.size(item)[0] > Settings.ScreenWidth / len(titles):
-            notfitting = True
-            print(index)
+            fiting = True
         else:
-            notfitting = False
-        while notfitting:
+            fiting = False
+        while fiting:
             size -= 2
             font = pygame.font.Font(Settings.FONT, size)
             if font.size(item)[0] < Settings.ScreenWidth / len(titles):
-                notfitting = False
+                fiting = False
 
-    if (pos == "Bottom"):
+    if pos == "Bottom":
         y = Settings.ScreenHeight - font.size(titles[0])[1]
     else:
         y = 0
 
     for index, item in enumerate(titles):
-        offset =  index * ((Settings.ScreenWidth / len(titles)) )
+        offset = index * (Settings.ScreenWidth / len(titles))
         buttons.append(Button(item, size, offset, y, Settings.ScreenWidth / len(titles)))
-        buttons[index].rect.topleft = (offset,y)
+        buttons[index].rect.topleft = (offset, y)
 
     return buttons
-
-

@@ -21,8 +21,6 @@ class Game:
         pygame.display.set_caption(Settings.Title)
         # Load Icon
         pygame.display.set_icon(self.icon)
-        # Load a Font
-        self.font = pygame.font.match_font(Settings.FONT)
         # Initialise the Clock to limit the Gamespeed
         self.clock = pygame.time.Clock()
         # Create Scene Manager
@@ -47,9 +45,9 @@ class Game:
         while self.running:
             self.clock.tick(Settings.FPS)
             self.events()
-            self.scene_manager.scene.handle_events(pygame.event.get(), self.scene_manager)
-            self.scene_manager.scene.update()
-            self.scene_manager.scene.render(self.screen)
+            self.scene_manager.activeScene.handle_events(pygame.event.get(), self.scene_manager)
+            self.scene_manager.activeScene.update()
+            self.scene_manager.activeScene.render(self.screen)
         # Close the Game
         self.close()
 
