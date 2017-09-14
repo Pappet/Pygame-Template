@@ -22,25 +22,15 @@ class Scene(object):
 
 class SceneManager(object):
     def __init__(self):
-        self.titleScene = TitleScene()
-        self.optionsScene = OptionsScene()
-        self.gameScene = GameScene()
-        self.endScene = EndScene()
-
-        self.activeScene = self.titleScene
-
+        self.activeScene = TitleScene()
         self.go_to(self.activeScene)
 
     def go_to(self, scene):
-        if scene == "TitleScene":
-            self.activeScene = self.titleScene
-        if scene == "OptionsScene":
-            self.activeScene = self.optionsScene
-        if scene == "GameScene":
-            self.activeScene = self.gameScene
-        if scene == "EndScene":
-            self.activeScene = self.endScene
+        self.activeScene = scene
         self.activeScene.manager = self
+
+    def new_scene(self, scene):
+        self.activeScene = scene()
 
 
 class TitleScene(Scene):
@@ -71,11 +61,11 @@ class TitleScene(Scene):
 
     def handle_events(self, events, scene_manager):
         if "clicked" in self.playButton.handle_events():
-            scene_manager.go_to("GameScene")
+            scene_manager.new_scene("GameScene")
         if "clicked" in self.optionsButton.handle_events():
             scene_manager.go_to("OptionsScene")
         if "clicked" in self.exitButton.handle_events():
-            scene_manager.go_to("EndScene")
+            scene_manager.new_scene("EndScene")
 
         for a in self.allButtons:
             a.handle_events()
@@ -152,7 +142,7 @@ class GameScene(Scene):
                         # Set The Music Volume
                         pygame.mixer.music.set_volume(Settings.volume_music_paused_screen)
                     else:
-                        scene_manager.go_to("EndScene")
+                        scene_manager.new_scene("EndScene")
                 if e.key == pygame.K_SPACE:
                     self.paused = False
                     # Reset the Music Volume
