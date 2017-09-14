@@ -22,12 +22,20 @@ class Scene(object):
 
 class SceneManager(object):
     def __init__(self):
+<<<<<<< HEAD
         self.activeScene = TitleScene()
         self.go_to(self.activeScene)
 
     def go_to(self, scene):
         self.activeScene = scene
         self.activeScene.manager = self
+=======
+        self.go_to(TitleScene())
+
+    def go_to(self, scene):
+        self.scene = scene
+        self.scene.manager = self
+>>>>>>> parent of 2223a89... Rewriten Scene handling
 
     def new_scene(self, scene):
         self.activeScene = scene()
@@ -36,23 +44,20 @@ class SceneManager(object):
 class TitleScene(Scene):
     def __init__(self):
         super(TitleScene, self).__init__()
-        # Menu Buttons
-        self.playButton = GUI.Button("Play", 75, 250, Settings.ScreenHeight - 350)
-        self.optionsButton = GUI.Button("Options", 75, 250, Settings.ScreenHeight - 200)
-        self.exitButton = GUI.Button("Exit", 75, 250, Settings.ScreenHeight - 50)
-        # Group all Buttons
+
+        self.playButton = GUI.Button("Play", 75, Settings.ScreenWidth / 2, Settings.ScreenHeight / 6)
+        self.optionsButton = GUI.Button("Options", 75, Settings.ScreenWidth / 2, Settings.ScreenHeight / 3)
+        self.exitButton = GUI.Button("Exit", 75, Settings.ScreenWidth / 2, Settings.ScreenHeight / 2)
+
         self.allButtons = (self.playButton, self.optionsButton, self.exitButton)
-        print("New Title")
 
     def render(self, screen):
         # Resets the Screen
         screen.fill(Color.Blue)
-        # V - Here is stuff drawn
 
         for a in self.allButtons:
             a.draw(screen)
 
-        # A - Here is stuff drawn
         pygame.display.flip()
 
     def update(self):
@@ -61,36 +66,23 @@ class TitleScene(Scene):
 
     def handle_events(self, events, scene_manager):
         if "clicked" in self.playButton.handle_events():
+<<<<<<< HEAD
             scene_manager.new_scene("GameScene")
         if "clicked" in self.optionsButton.handle_events():
             scene_manager.go_to("OptionsScene")
         if "clicked" in self.exitButton.handle_events():
             scene_manager.new_scene("EndScene")
+=======
+            print("clicked")
+            scene_manager.go_to(GameScene())
+        if "" in self.optionsButton.handle_events():
+            pass
+        if "clicked" in self.exitButton.handle_events():
+            scene_manager.go_to(EndScene())
+>>>>>>> parent of 2223a89... Rewriten Scene handling
 
         for a in self.allButtons:
             a.handle_events()
-
-class OptionsScene(Scene):
-    def __init__(self):
-        super(OptionsScene, self).__init__()
-        self.backButton = GUI.Button("Back", 75, 250, Settings.ScreenHeight - 50)
-        # Group all Buttons
-        self.allButtons = (self.backButton)
-
-    def render(self, screen):
-        # Resets the Screen
-        screen.fill(Color.Blue)
-        # V - Here is stuff drawn
-        self.backButton.draw(screen)
-        # A - Here is stuff drawn
-        pygame.display.flip()
-
-    def update(self):
-        pass
-
-    def handle_events(self, events, scene_manager):
-        if "clicked" in self.backButton.handle_events():
-            scene_manager.go_to("TitleScene")
 
 
 class GameScene(Scene):
@@ -99,6 +91,10 @@ class GameScene(Scene):
         # Play a Sound
         pygame.mixer.music.play()
         self.paused = False
+
+        self.titles = ("Map", "Inventory", "Quests", "Menu", "pups", "Astrid")
+        self.buttons = GUI.ButtonGrid(self.titles, 75, "Bottom")
+
         # Group for all Sprites
         self.all_sprites = pygame.sprite.Group()
         self.player = Player()
@@ -108,11 +104,11 @@ class GameScene(Scene):
         if not self.paused:
             # Reset the screen to all black
             screen.fill(Color.Black)
-            # V - Here is stuff drawn
-
+            # Just for Testing
+            #Utilitys.draw_text("GAME", 128, Color.Green, Settings.ScreenWidth / 2, Settings.ScreenHeight / 8, screen)
             self.all_sprites.draw(screen)
-
-            # A - Here is stuff drawn
+            for b in self.buttons:
+                b.draw(screen)
         else:
             # Draw an transparent Background over everything else
             transparent_background = pygame.Surface((Settings.ScreenWidth, Settings.ScreenHeight))
@@ -130,10 +126,15 @@ class GameScene(Scene):
     def update(self):
         if not self.paused:
             self.all_sprites.update()
+            for b in self.buttons:
+                b.update()
         else:
             pass
 
     def handle_events(self, events, scene_manager):
+        for b in self.buttons:
+            b.handle_events()
+
         for e in events:
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
@@ -142,7 +143,11 @@ class GameScene(Scene):
                         # Set The Music Volume
                         pygame.mixer.music.set_volume(Settings.volume_music_paused_screen)
                     else:
+<<<<<<< HEAD
                         scene_manager.new_scene("EndScene")
+=======
+                        scene_manager.go_to(EndScene())
+>>>>>>> parent of 2223a89... Rewriten Scene handling
                 if e.key == pygame.K_SPACE:
                     self.paused = False
                     # Reset the Music Volume
@@ -157,15 +162,11 @@ class EndScene(Scene):
 
     def render(self, screen):
         screen.fill(Color.Black)
-        # V - Here is stuff drawn
-
         # Write Some Text
         Utilitys.draw_text("Thank you for playing!", 64, Color.Red,
                            Settings.ScreenWidth / 2, Settings.ScreenHeight / 4, screen)
         Utilitys.draw_text("press Escape to close", 32, Color.Red,
                            Settings.ScreenWidth / 2, Settings.ScreenHeight / 2, screen)
-
-        # A - Here is stuff drawn
         pygame.display.flip()
 
     def update(self):
