@@ -1,5 +1,6 @@
 # The Settings for the Game
 
+
 ### SETTINGS
 # How big should the Window be???
 ScreenWidth = 1024

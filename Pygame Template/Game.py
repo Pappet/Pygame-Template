@@ -2,7 +2,7 @@ import pygame
 import sys
 import Settings
 import Scenes
-
+import ConfigParser
 
 class Game:
     # Initialise The Game
@@ -32,6 +32,7 @@ class Game:
 
     # Load different Data like Sprites and Sounds
     def load_data(self):
+        ConfigParser.Read()
         self.icon = pygame.image.load(Settings.Icon)
         pygame.mixer.music.load(Settings.StartMusic)
 
@@ -61,6 +62,7 @@ class Game:
 
     # Close The Game
     def close(self):
+        ConfigParser.Write()
         # Shutdown Pygame and Sys
         pygame.quit()
         sys.exit()
